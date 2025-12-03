@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTS Map Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="container">
+        <canvas id="mapCanvas" width="640" height="640"></canvas>
+        <div id="sidebar">
+            <h3>Tools</h3>
+            <div id="terrain-selector">
+                <h4>Terrain</h4>
+                <button class="tool-btn selected" data-type="terrain" data-value="grass">Grass</button>
+                <button class="tool-btn" data-type="terrain" data-value="dirt">Dirt</button>
+                <button class="tool-btn" data-type="terrain" data-value="water">Water</button>
+            </div>
+            <div id="unit-selector">
+                <h4>Units</h4>
+                <button class="tool-btn" data-type="unit" data-value="none">Clear Unit</button>
+                <!-- Units will be populated here -->
+                <button class="tool-btn" data-type="unit" data-value="drone">Drone</button>
+                <button class="tool-btn" data-type="unit" data-value="hatchery">Hatchery</button>
+                <button class="tool-btn" data-type="unit" data-value="hydrarisk">Hydrarisk</button>
+                <button class="tool-btn" data-type="unit" data-value="larva">Larva</button>
+                <button class="tool-btn" data-type="unit" data-value="marine">Marine</button>
+                <button class="tool-btn" data-type="unit" data-value="multalrisk">Multalrisk</button>
+                <button class="tool-btn" data-type="unit" data-value="overloard">Overloard</button>
+                <button class="tool-btn" data-type="unit" data-value="ultrarisk">Ultrarisk</button>
+                <button class="tool-btn" data-type="unit" data-value="zealot">Zealot</button>
+                <button class="tool-btn" data-type="unit" data-value="zergling">Zergling</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="client.js"></script>
+</body>
+</html>
