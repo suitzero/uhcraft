@@ -1,0 +1,55 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #333;
+    font-family: sans-serif;
+    color: white;
+}
+
+#container {
+    display: flex;
+    gap: 20px;
+}
+
+canvas {
+    background-color: #000;
+    border: 2px solid #555;
+    cursor: crosshair;
+}
+
+#sidebar {
+    background-color: #444;
+    padding: 20px;
+    border-radius: 8px;
+    width: 200px;
+}
+
+h3, h4 {
+    margin-top: 0;
+}
+
+.tool-btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #666;
+    color: white;
+    cursor: pointer;
+    text-align: left;
+}
+
+.tool-btn:hover {
+    background-color: #777;
+}
+
+.tool-btn.selected {
+    background-color: #007bff;
+    color: white;
+}
