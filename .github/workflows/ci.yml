@@ -13,13 +13,33 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+    - name: Configure CMake (Debug)
+      run: cmake -B build_debug -DCMAKE_BUILD_TYPE=Debug
 
-    - name: Build
-      run: cmake --build build --config Release
+    - name: Build (Debug)
+      run: cmake --build build_debug --config Debug
+
+    - name: Configure CMake (Release)
+      run: cmake -B build_release -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build (Release)
+      run: cmake --build build_release --config Release
 
     - name: Run Simulation Demo (Determinism Check)
-      run: ./build/sim_demo
+      run: |
+        ./build_debug/sim_demo > debug_output.txt
+        grep "FINAL_HASH=" debug_output.txt | cut -d'=' -f2 > debug_hash.txt
+        
+        ./build_release/sim_demo > release_output.txt
+        grep "FINAL_HASH=" release_output.txt | cut -d'=' -f2 > release_hash.txt
+        
+        if cmp -s debug_hash.txt release_hash.txt; then
+          echo "Hashes match"
+        else
+          echo "Hashes mismatch!"
+          echo "Debug: $(cat debug_hash.txt)"
+          echo "Release: $(cat release_hash.txt)"
+          exit 1
+        fi
       env:
         DUMP_HASHES: 1
