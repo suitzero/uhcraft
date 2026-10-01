@@ -73,6 +73,7 @@ int main() {
     if (mismatches == 0) {
         std::cout << "SUCCESS: 100% Deterministic match over " << NUM_TICKS << " ticks!" << std::endl;
         std::cout << "Final State Hash: " << hashes_run1.back() << std::endl;
+        std::cout << "FINAL_HASH=" << hashes_run1.back() << std::endl;
         return 0;
     } else {
         std::cerr << "FAILED: " << mismatches << " mismatches found." << std::endl;
