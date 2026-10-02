@@ -2,29 +2,8 @@
 
 #include "SimulationState.hpp"
 #include "RNG.hpp"
+#include "Command.hpp"
 #include <vector>
-
-// Commands represent deterministic inputs applied during a tick
-struct Command {
-    uint32_t tick;
-    uint32_t player_id;
-    // Payload (e.g., spawn unit, move to, etc.)
-    enum class Type { NONE, SPAWN_UNIT, CHANGE_DIRECTION };
-    Type type;
-
-    // Simplistic payload for the demo
-    union {
-        struct {
-            int32_t x;
-            int32_t y;
-        } spawn;
-        struct {
-            uint32_t unit_id;
-            int32_t dx;
-            int32_t dy;
-        } dir;
-    } payload;
-};
 
 class SimulationEngine {
 public:
@@ -40,7 +19,10 @@ public:
             if (cmd.tick != state.tick) continue;
 
             if (cmd.type == Command::Type::SPAWN_UNIT) {
-                Vector2 pos = {FixedPoint::from_int(cmd.payload.spawn.x), FixedPoint::from_int(cmd.payload.spawn.y)};
+                int32_t x = 0;
+                int32_t y = 0;
+                cmd.get_spawn_payload(x, y);
+                Vector2 pos = {FixedPoint::from_int(x), FixedPoint::from_int(y)};
 
                 // Random velocity for the demo using our deterministic RNG
                 int32_t vx = static_cast<int32_t>(rng.next_range(11)) - 5; // -5 to 5
@@ -50,10 +32,14 @@ public:
                 state.add_unit(next_unit_id++, pos, vel);
             }
             else if (cmd.type == Command::Type::CHANGE_DIRECTION) {
+                uint32_t unit_id = 0;
+                int32_t dx = 0;
+                int32_t dy = 0;
+                cmd.get_dir_payload(unit_id, dx, dy);
                 for (size_t i = 0; i < state.active_unit_count; ++i) {
-                    if (state.units[i].id == cmd.payload.dir.unit_id) {
-                        state.units[i].velocity.x = FixedPoint::from_int(cmd.payload.dir.dx);
-                        state.units[i].velocity.y = FixedPoint::from_int(cmd.payload.dir.dy);
+                    if (state.units[i].id == unit_id) {
+                        state.units[i].velocity.x = FixedPoint::from_int(dx);
+                        state.units[i].velocity.y = FixedPoint::from_int(dy);
                         break;
                     }
                 }
