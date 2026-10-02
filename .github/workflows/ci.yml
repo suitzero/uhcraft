@@ -25,6 +25,12 @@ jobs:
     - name: Build (Release)
       run: cmake --build build_release --config Release
 
+    - name: Run Input System Tests (Debug)
+      run: ./build_debug/test_input_system
+      
+    - name: Run Input System Tests (Release)
+      run: ./build_release/test_input_system
+
     - name: Run Simulation Demo (Determinism Check)
       run: |
         ./build_debug/sim_demo > debug_output.txt

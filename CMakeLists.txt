@@ -21,3 +21,6 @@ endif()
 # We will add executable targets later as we build Phase 0.
 add_executable(sim_demo src/main.cpp)
 target_include_directories(sim_demo PRIVATE include)
+
+add_executable(test_input_system src/test_input_system.cpp)
+target_include_directories(test_input_system PRIVATE include)
