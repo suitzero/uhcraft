@@ -30,8 +30,8 @@ If all peers apply the same inputs on the same tick, the simulation proceeds ide
 
 > Goal: Record/playback input stream. Replay = free bonus of determinism and the best testing tool.
 
-- [ ] Define input command structure (tick number + player id + serialized payload)
-- [ ] Input buffer (input queue per tick, schedule future tick inputs)
+- [x] Define input command structure (tick number + player id + serialized payload)
+- [x] Input buffer (input queue per tick, schedule future tick inputs)
 - [ ] Replay format (header: seed/version/start state hash + input stream)
 - [ ] Record / Playback replays
 - [ ] **Verification**: Live execution hash == Replay playback hash

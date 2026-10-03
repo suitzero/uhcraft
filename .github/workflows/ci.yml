@@ -31,6 +31,12 @@ jobs:
     - name: Run Input System Tests (Release)
       run: ./build_release/test_input_system
 
+    - name: Run Replay Tests (Debug)
+      run: ./build_debug/test_replay
+
+    - name: Run Replay Tests (Release)
+      run: ./build_release/test_replay
+
     - name: Run Simulation Demo (Determinism Check)
       run: |
         ./build_debug/sim_demo > debug_output.txt
