@@ -24,3 +24,6 @@ target_include_directories(sim_demo PRIVATE include)
 
 add_executable(test_input_system src/test_input_system.cpp)
 target_include_directories(test_input_system PRIVATE include)
+
+add_executable(test_replay src/test_replay.cpp)
+target_include_directories(test_replay PRIVATE include)
