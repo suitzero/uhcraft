@@ -22,6 +22,7 @@ void test_header_validation() {
     assert(h2.seed == 123456789012345ULL);
     assert(h2.start_state_hash == 0xABCDEF01);
     assert(h2.tick_count == 1000);
+    (void)h2; // keep -Werror happy under NDEBUG (Release asserts compile out)
 }
 
 // Helper to generate some inputs
