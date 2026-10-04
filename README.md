@@ -32,10 +32,10 @@ If all peers apply the same inputs on the same tick, the simulation proceeds ide
 
 - [x] Define input command structure (tick number + player id + serialized payload)
 - [x] Input buffer (input queue per tick, schedule future tick inputs)
-- [ ] Replay format (header: seed/version/start state hash + input stream)
-- [ ] Record / Playback replays
-- [ ] **Verification**: Live execution hash == Replay playback hash
-- [ ] Fuzz replays (generate thousands of random inputs -> verify playback, include in CI)
+- [x] Replay format (header: seed/version/start state hash + input stream)
+- [x] Record / Playback replays
+- [x] **Verification**: Live execution hash == Replay playback hash
+- [x] Fuzz replays (generate thousands of random inputs -> verify playback, include in CI)
 
 ## Phase 2 — Local Lockstep (Multi-peer, Same Machine)
 

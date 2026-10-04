@@ -27,3 +27,6 @@ target_include_directories(test_input_system PRIVATE include)
 
 add_executable(test_replay src/test_replay.cpp)
 target_include_directories(test_replay PRIVATE include)
+
+add_executable(test_fuzz_replay src/test_fuzz_replay.cpp)
+target_include_directories(test_fuzz_replay PRIVATE include)
