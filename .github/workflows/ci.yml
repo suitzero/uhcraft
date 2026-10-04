@@ -37,6 +37,12 @@ jobs:
     - name: Run Replay Tests (Release)
       run: ./build_release/test_replay
 
+    - name: Run Fuzz Replay Tests (Debug)
+      run: ./build_debug/test_fuzz_replay
+
+    - name: Run Fuzz Replay Tests (Release)
+      run: ./build_release/test_fuzz_replay
+
     - name: Run Simulation Demo (Determinism Check)
       run: |
         ./build_debug/sim_demo > debug_output.txt
