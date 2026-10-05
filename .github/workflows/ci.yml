@@ -43,6 +43,12 @@ jobs:
     - name: Run Fuzz Replay Tests (Release)
       run: ./build_release/test_fuzz_replay
 
+    - name: Run Loopback Peer Tests (Debug)
+      run: ./build_debug/test_loopback_peer
+
+    - name: Run Loopback Peer Tests (Release)
+      run: ./build_release/test_loopback_peer
+
     - name: Run Simulation Demo (Determinism Check)
       run: |
         ./build_debug/sim_demo > debug_output.txt
