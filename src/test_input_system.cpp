@@ -3,6 +3,7 @@
 #include <cassert>
 #include "Command.hpp"
 #include "InputBuffer.hpp"
+#include "SimulationEngine.hpp"
 
 void test_command_serialization() {
     Command cmd1;
@@ -39,6 +40,7 @@ void test_command_ordering() {
 
 void test_input_buffer() {
     InputBuffer buffer;
+    buffer.set_delay(0); // Set delay to 0 to match old behavior for this test
 
     Command cmd_p1;
     cmd_p1.tick = 10;
@@ -75,6 +77,46 @@ void test_input_buffer() {
     assert(cmds_tick10_again.empty()); // The previous call erased tick 10 cmds
 }
 
+void test_input_delay() {
+    InputBuffer buffer_no_delay;
+    buffer_no_delay.set_delay(0);
+
+    InputBuffer buffer_delayed;
+    buffer_delayed.set_delay(2);
+
+    // Create a base sequence of inputs
+    std::vector<Command> base_inputs;
+    for (int i = 0; i < 5; ++i) {
+        Command spawn_cmd;
+        spawn_cmd.tick = i * 10;
+        spawn_cmd.player_id = 1;
+        spawn_cmd.set_spawn_payload(100 + i, 200 + i);
+        base_inputs.push_back(spawn_cmd);
+    }
+
+    // Delay 0 buffer receives inputs with ticks + 2 to simulate identical schedule
+    for (const auto& cmd : base_inputs) {
+        Command shifted_cmd = cmd;
+        shifted_cmd.tick += 2;
+        buffer_no_delay.enqueue(shifted_cmd);
+    }
+
+    // Delay 2 buffer receives base inputs
+    for (const auto& cmd : base_inputs) {
+        buffer_delayed.enqueue(cmd);
+    }
+
+    SimulationEngine engine_no_delay(12345);
+    SimulationEngine engine_delayed(12345);
+
+    for (uint32_t tick = 0; tick < 100; ++tick) {
+        engine_no_delay.tick(buffer_no_delay.get_commands_for_tick(tick));
+        engine_delayed.tick(buffer_delayed.get_commands_for_tick(tick));
+
+        assert(engine_no_delay.get_state().compute_hash() == engine_delayed.get_state().compute_hash());
+    }
+}
+
 int main() {
     std::cout << "Running Input System Tests..." << std::endl;
     
@@ -86,6 +128,9 @@ int main() {
     
     test_input_buffer();
     std::cout << " - Input Buffer OK" << std::endl;
+    
+    test_input_delay();
+    std::cout << " - Input Delay Model OK" << std::endl;
     
     std::cout << "All Input System Tests Passed!" << std::endl;
     return 0;

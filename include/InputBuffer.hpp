@@ -8,16 +8,23 @@
 // InputBuffer holds input commands per tick and supports scheduling future inputs
 class InputBuffer {
 public:
-    // Adds a command to the buffer. The command's own tick is used.
-    void enqueue(const Command& cmd) {
-        buffer[cmd.tick].push_back(cmd);
+    // Sets the delay applied to enqueued inputs.
+    void set_delay(uint32_t d) {
+        delay = d;
     }
 
-    // Schedules a command to be executed at a future tick relative to its current tick.
-    void schedule(const Command& cmd, uint32_t delay) {
+    // Adds a command to the buffer. The command is scheduled for cmd.tick + delay.
+    void enqueue(const Command& cmd) {
         Command delayed_cmd = cmd;
         delayed_cmd.tick += delay;
-        enqueue(delayed_cmd);
+        buffer[delayed_cmd.tick].push_back(delayed_cmd);
+    }
+
+    // Schedules a command to be executed at a future tick relative to its current tick, ignoring the default delay.
+    void schedule(const Command& cmd, uint32_t additional_delay) {
+        Command delayed_cmd = cmd;
+        delayed_cmd.tick += additional_delay;
+        buffer[delayed_cmd.tick].push_back(delayed_cmd);
     }
 
     // Retrieves all commands for a specific tick, sorted deterministically
@@ -38,4 +45,6 @@ private:
     // We use std::map to ensure that ticks are stored sorted, although we typically query per-tick.
     // The key is the tick number, and the value is a list of commands for that tick.
     std::map<uint32_t, std::vector<Command>> buffer;
+
+    uint32_t delay = 2; // Default delay parameter
 };

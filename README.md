@@ -42,7 +42,7 @@ If all peers apply the same inputs on the same tick, the simulation proceeds ide
 > Goal: 2 processes exchange only inputs via loopback and proceed with identical simulations.
 
 - [x] Peer abstraction (transport interface — initially loopback/in-memory)
-- [ ] Input delay model (Input at tick N applied at tick N+d)
+- [x] Input delay model (Input at tick N applied at tick N+d)
 - [ ] Lockstep barrier: Proceed tick only when all peer inputs arrive (handle stalls)
 - [ ] Exchange state hash every tick -> **Detect desync immediately**
 - [ ] Desync dump (serialize state of both sides + diff tool)
