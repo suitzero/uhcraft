@@ -49,6 +49,12 @@ jobs:
     - name: Run Loopback Peer Tests (Release)
       run: ./build_release/test_loopback_peer
 
+    - name: Run Lockstep Barrier Tests (Debug)
+      run: ./build_debug/test_lockstep_barrier
+
+    - name: Run Lockstep Barrier Tests (Release)
+      run: ./build_release/test_lockstep_barrier
+
     - name: Run Simulation Demo (Determinism Check)
       run: |
         ./build_debug/sim_demo > debug_output.txt
