@@ -42,7 +42,7 @@ void test_lockstep_barrier() {
     peer2.sendInput(1, 0, LockstepBarrier::bundle_commands({cmd2}));
     peer3.sendInput(1, 0, LockstepBarrier::bundle_commands({cmd3}));
 
-    bool advanced = barrier1.poll_and_advance(0, out_commands, 1, std::chrono::milliseconds(0));
+    [[maybe_unused]] bool advanced = barrier1.poll_and_advance(0, out_commands, 1, std::chrono::milliseconds(0));
     assert(advanced == true);
     assert(out_commands.size() == 3);
     // Deterministic sorting (Command::operator< sorts by tick, player_id, type)
