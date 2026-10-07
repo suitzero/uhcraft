@@ -33,3 +33,6 @@ target_include_directories(test_fuzz_replay PRIVATE include)
 
 add_executable(test_loopback_peer tests/test_loopback_peer.cpp src/LoopbackPeer.cpp)
 target_include_directories(test_loopback_peer PRIVATE include)
+
+add_executable(test_lockstep_barrier tests/test_lockstep_barrier.cpp src/LoopbackPeer.cpp)
+target_include_directories(test_lockstep_barrier PRIVATE include)
