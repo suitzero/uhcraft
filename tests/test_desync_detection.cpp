@@ -90,8 +90,8 @@ void run_test(bool simulate_desync) {
 
         // Now barrier processes tick
         std::vector<Command> out_cmds1, out_cmds2;
-        bool adv1 = bar1.poll_and_advance(tick, out_cmds1, 10, std::chrono::milliseconds(0));
-        bool adv2 = bar2.poll_and_advance(tick, out_cmds2, 10, std::chrono::milliseconds(0));
+        [[maybe_unused]] bool adv1 = bar1.poll_and_advance(tick, out_cmds1, 10, std::chrono::milliseconds(0));
+        [[maybe_unused]] bool adv2 = bar2.poll_and_advance(tick, out_cmds2, 10, std::chrono::milliseconds(0));
         
         assert(adv1 && adv2);
 
