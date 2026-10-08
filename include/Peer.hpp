@@ -18,6 +18,9 @@ public:
     
     // pollInputs returns all received inputs for the given tick, sorted by sender's peerId
     virtual std::vector<std::pair<uint32_t, std::vector<uint8_t>>> pollInputs(uint32_t tick) = 0;
+    
+    virtual void sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash) = 0;
+    virtual std::vector<std::pair<uint32_t, uint32_t>> pollStateHashes(uint32_t tick) = 0;
 };
 
 // LoopbackHub serves as the shared message broker for in-memory loopback peers
@@ -30,6 +33,18 @@ public:
         std::vector<uint8_t> payload;
 
         bool operator<(const Message& other) const {
+            if (tick != other.tick) return tick < other.tick;
+            return fromPeerId < other.fromPeerId;
+        }
+    };
+
+    struct HashMessage {
+        uint32_t fromPeerId;
+        uint32_t toPeerId;
+        uint32_t tick;
+        uint32_t hash;
+        
+        bool operator<(const HashMessage& other) const {
             if (tick != other.tick) return tick < other.tick;
             return fromPeerId < other.fromPeerId;
         }
@@ -56,8 +71,30 @@ public:
         return results;
     }
 
+    void enqueueHash(uint32_t fromPeerId, uint32_t toPeerId, uint32_t tick, uint32_t hash) {
+        hashMessages.push_back({fromPeerId, toPeerId, tick, hash});
+    }
+
+    std::vector<std::pair<uint32_t, uint32_t>> dequeueHashes(uint32_t toPeerId, uint32_t tick) {
+        std::vector<std::pair<uint32_t, uint32_t>> results;
+        for (auto it = hashMessages.begin(); it != hashMessages.end(); ) {
+            if (it->toPeerId == toPeerId && it->tick == tick) {
+                results.push_back({it->fromPeerId, it->hash});
+                it = hashMessages.erase(it);
+            } else {
+                ++it;
+            }
+        }
+        // Ensure deterministic ordering based on fromPeerId
+        std::stable_sort(results.begin(), results.end(), [](const auto& a, const auto& b) {
+            return a.first < b.first;
+        });
+        return results;
+    }
+
 private:
     std::vector<Message> messages;
+    std::vector<HashMessage> hashMessages;
 };
 
 // LoopbackPeer represents an endpoint in the loopback network
@@ -70,6 +107,8 @@ public:
     void disconnect() override;
     void sendInput(uint32_t peerId, uint32_t tick, const std::vector<uint8_t>& serializedInput) override;
     std::vector<std::pair<uint32_t, std::vector<uint8_t>>> pollInputs(uint32_t tick) override;
+    void sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash) override;
+    std::vector<std::pair<uint32_t, uint32_t>> pollStateHashes(uint32_t tick) override;
 
 private:
     LoopbackHub& hub;
