@@ -26,3 +26,17 @@ std::vector<std::pair<uint32_t, std::vector<uint8_t>>> LoopbackPeer::pollInputs(
     }
     return hub.dequeue(myPeerId, tick);
 }
+
+void LoopbackPeer::sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash) {
+    if (!connected) {
+        throw std::runtime_error("Cannot send hash while disconnected");
+    }
+    hub.enqueueHash(myPeerId, peerId, tick, hash);
+}
+
+std::vector<std::pair<uint32_t, uint32_t>> LoopbackPeer::pollStateHashes(uint32_t tick) {
+    if (!connected) {
+        throw std::runtime_error("Cannot poll hashes while disconnected");
+    }
+    return hub.dequeueHashes(myPeerId, tick);
+}
