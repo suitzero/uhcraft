@@ -39,3 +39,6 @@ target_include_directories(test_lockstep_barrier PRIVATE include)
 
 add_executable(test_desync_detection tests/test_desync_detection.cpp src/LoopbackPeer.cpp)
 target_include_directories(test_desync_detection PRIVATE include)
+
+add_executable(test_desync_dump tests/test_desync_dump.cpp)
+target_include_directories(test_desync_dump PRIVATE include)

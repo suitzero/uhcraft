@@ -9,6 +9,8 @@
 #include "RNG.hpp"
 #include "LockstepBarrier.hpp"
 #include "DesyncMonitor.hpp"
+#include "DesyncDump.hpp"
+#include <fstream>
 
 void run_test(bool simulate_desync) {
     std::cout << "Testing DesyncMonitor (" << (simulate_desync ? "Desync Path" : "Happy Path") << ")..." << std::endl;
@@ -41,6 +43,20 @@ void run_test(bool simulate_desync) {
         (void)peer_id;
         d1_flag = true;
         d1_tick = tick;
+        
+        if (simulate_desync) {
+            std::string dump1 = DesyncDump::dump_state(e1.get_state());
+            std::string dump2 = DesyncDump::dump_state(e2.get_state());
+            
+            std::ofstream out1("dump_local_p1.txt");
+            out1 << dump1;
+            
+            std::ofstream out2("dump_remote_p2.txt");
+            out2 << dump2;
+            
+            std::cout << "\n[DesyncMonitor Hook] Desync Dump Generated at tick " << tick << "\n";
+            std::cout << DesyncDump::diff_dumps(dump1, dump2) << "\n";
+        }
     };
     auto cb2 = [&](uint32_t tick, uint32_t expected, uint32_t actual, uint32_t peer_id) {
         (void)expected;
