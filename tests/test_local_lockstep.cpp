@@ -115,7 +115,10 @@ int main(int argc, char** argv) {
         for (uint32_t i = 0; i < num_peers; ++i) {
             std::vector<Command> out_cmds;
             bool advanced = nodes[i].barrier->poll_and_advance(tick, out_cmds, 10, std::chrono::milliseconds(0));
-            assert(advanced && "Barrier stalled unexpectedly in loopback environment!");
+            if (!advanced) {
+                std::cerr << "Barrier stalled unexpectedly in loopback environment!\n";
+                std::abort();
+            }
             
             // Enqueue received commands into the input buffer (delay model applied here)
             for (const auto& cmd : out_cmds) {
