@@ -43,10 +43,10 @@ If all peers apply the same inputs on the same tick, the simulation proceeds ide
 
 - [x] Peer abstraction (transport interface — initially loopback/in-memory)
 - [x] Input delay model (Input at tick N applied at tick N+d)
-- [ ] Lockstep barrier: Proceed tick only when all peer inputs arrive (handle stalls)
-- [ ] Exchange state hash every tick -> **Detect desync immediately**
-- [ ] Desync dump (serialize state of both sides + diff tool)
-- [ ] **Verification**: 2~4 peers, 100,000 ticks with no desync
+- [x] Lockstep barrier: Proceed tick only when all peer inputs arrive (handle stalls)
+- [x] Exchange state hash every tick -> **Detect desync immediately**
+- [x] Desync dump (serialize state of both sides + diff tool)
+- [x] **Verification**: 2~4 peers, 100,000 ticks with no desync
 
 ## Phase 3 — Real Network
 

@@ -55,6 +55,12 @@ jobs:
     - name: Run Lockstep Barrier Tests (Release)
       run: ./build_release/test_lockstep_barrier
 
+    - name: Run Local Lockstep Tests (Debug)
+      run: ./build_debug/test_local_lockstep 10000
+
+    - name: Run Local Lockstep Tests (Release)
+      run: ./build_release/test_local_lockstep 10000
+
     - name: Run Simulation Demo (Determinism Check)
       run: |
         ./build_debug/sim_demo > debug_output.txt
