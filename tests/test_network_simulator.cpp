@@ -1,5 +1,5 @@
 #include "NetworkSimulator.hpp"
-#include "LoopbackPeer.hpp"
+#include "Peer.hpp"
 #include <iostream>
 #include <vector>
 #include <cassert>
