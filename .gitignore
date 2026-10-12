@@ -1,5 +1,4 @@
-node_modules/
-
+build_debug/
+build_release/
 build/
-*.o
-*.out
+node_modules/

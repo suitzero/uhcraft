@@ -52,8 +52,8 @@ If all peers apply the same inputs on the same tick, the simulation proceeds ide
 
 > Goal: Lockstep over UDP that withstands packet loss/latency/jitter.
 
-- [ ] UDP transport + reliability layer (inputs must never be lost — redundant send or ack/resend)
-- [ ] Include redundant inputs of recent k ticks in packets (loss tolerance)
+- [x] UDP transport + reliability layer (inputs must never be lost — redundant send or ack/resend)
+- [x] Include redundant inputs of recent k ticks in packets (loss tolerance)
 - [ ] Network simulator (inject artificial loss/latency/jitter — for testing)
 - [ ] Adaptive input delay (adjust d based on RTT)
 - [ ] Late peer handling policy (stall vs timeout vs drop)
