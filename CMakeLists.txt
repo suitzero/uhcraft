@@ -48,3 +48,6 @@ target_include_directories(test_local_lockstep PRIVATE include)
 
 add_executable(test_udp_peer tests/test_udp_peer.cpp src/UdpPeer.cpp)
 target_include_directories(test_udp_peer PRIVATE include)
+
+add_executable(test_network_simulator tests/test_network_simulator.cpp src/NetworkSimulator.cpp src/LoopbackPeer.cpp)
+target_include_directories(test_network_simulator PRIVATE include)
