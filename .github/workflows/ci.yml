@@ -61,6 +61,12 @@ jobs:
     - name: Run UDP Peer Tests (Release)
       run: ./build_release/test_udp_peer
 
+    - name: Run Network Simulator Tests (Debug)
+      run: ./build_debug/test_network_simulator
+
+    - name: Run Network Simulator Tests (Release)
+      run: ./build_release/test_network_simulator
+
     - name: Run Local Lockstep Tests (Debug)
       run: ./build_debug/test_local_lockstep 10000
 
