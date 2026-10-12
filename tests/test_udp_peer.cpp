@@ -51,13 +51,11 @@ void test_normal_exchange() {
 
         assert(inputs1.size() == 1);
         assert(inputs1[0].first == 2);
-        Command received_cmd2 = Command::deserialize(inputs1[0].second);
-        assert(received_cmd2 == cmd2);
+        assert(Command::deserialize(inputs1[0].second) == cmd2);
 
         assert(inputs2.size() == 1);
         assert(inputs2[0].first == 1);
-        Command received_cmd1 = Command::deserialize(inputs2[0].second);
-        assert(received_cmd1 == cmd1);
+        assert(Command::deserialize(inputs2[0].second) == cmd1);
         
         peer1.sendStateHash(2, tick, tick * 100);
         peer2.sendStateHash(1, tick, tick * 100);
@@ -135,15 +133,13 @@ void test_redundancy_loss_recovery() {
         auto inputs1 = peer1.pollInputs(t);
         if (!inputs1.empty()) {
             assert(inputs1.size() == 1);
-            Command received_cmd2 = Command::deserialize(inputs1[0].second);
-            assert(received_cmd2.tick == t);
+            assert(Command::deserialize(inputs1[0].second).tick == t);
         }
         
         auto inputs2 = peer2.pollInputs(t);
         if (!inputs2.empty()) {
             assert(inputs2.size() == 1);
-            Command received_cmd1 = Command::deserialize(inputs2[0].second);
-            assert(received_cmd1.tick == t);
+            assert(Command::deserialize(inputs2[0].second).tick == t);
         }
     }
     
