@@ -28,8 +28,9 @@ public:
     void disconnect() override;
     void sendInput(uint32_t peerId, uint32_t tick, const std::vector<uint8_t>& serializedInput) override;
     std::vector<std::pair<uint32_t, std::vector<uint8_t>>> pollInputs(uint32_t tick) override;
-    void sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash) override;
-    std::vector<std::pair<uint32_t, uint32_t>> pollStateHashes(uint32_t tick) override;
+    void sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash, uint32_t delay_vote = 0) override;
+    std::vector<StateHashResult> pollStateHashes(uint32_t tick) override;
+    uint32_t getRTT(uint32_t peerId) const override;
 
     // Test tool to force flush of delayed packets. Not strictly necessary if 
     // real time passes, but helpful for tests.
@@ -59,6 +60,7 @@ private:
         uint32_t peerId;
         uint32_t tick;
         uint32_t hash;
+        uint32_t delay_vote;
 
         bool operator>(const DelayedHash& other) const {
             return deliverAt > other.deliverAt;
