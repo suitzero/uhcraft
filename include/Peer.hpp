@@ -5,6 +5,12 @@
 #include <utility>
 #include <algorithm>
 
+struct StateHashResult {
+    uint32_t peerId;
+    uint32_t hash;
+    uint32_t delay_vote;
+};
+
 // Abstract peer transport interface
 class Peer {
 public:
@@ -19,8 +25,11 @@ public:
     // pollInputs returns all received inputs for the given tick, sorted by sender's peerId
     virtual std::vector<std::pair<uint32_t, std::vector<uint8_t>>> pollInputs(uint32_t tick) = 0;
     
-    virtual void sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash) = 0;
-    virtual std::vector<std::pair<uint32_t, uint32_t>> pollStateHashes(uint32_t tick) = 0;
+    virtual void sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash, uint32_t delay_vote = 0) = 0;
+    virtual std::vector<StateHashResult> pollStateHashes(uint32_t tick) = 0;
+
+    // getRTT returns the smoothed RTT (Round Trip Time) in milliseconds to the specified peer
+    virtual uint32_t getRTT(uint32_t peerId) const = 0;
 };
 
 // LoopbackHub serves as the shared message broker for in-memory loopback peers
@@ -43,6 +52,7 @@ public:
         uint32_t toPeerId;
         uint32_t tick;
         uint32_t hash;
+        uint32_t delay_vote;
         
         bool operator<(const HashMessage& other) const {
             if (tick != other.tick) return tick < other.tick;
@@ -71,15 +81,15 @@ public:
         return results;
     }
 
-    void enqueueHash(uint32_t fromPeerId, uint32_t toPeerId, uint32_t tick, uint32_t hash) {
-        hashMessages.push_back({fromPeerId, toPeerId, tick, hash});
+    void enqueueHash(uint32_t fromPeerId, uint32_t toPeerId, uint32_t tick, uint32_t hash, uint32_t delay_vote = 0) {
+        hashMessages.push_back({fromPeerId, toPeerId, tick, hash, delay_vote});
     }
 
-    std::vector<std::pair<uint32_t, uint32_t>> dequeueHashes(uint32_t toPeerId, uint32_t tick) {
-        std::vector<std::pair<uint32_t, uint32_t>> results;
+    std::vector<StateHashResult> dequeueHashes(uint32_t toPeerId, uint32_t tick) {
+        std::vector<StateHashResult> results;
         for (auto it = hashMessages.begin(); it != hashMessages.end(); ) {
             if (it->toPeerId == toPeerId && it->tick == tick) {
-                results.push_back({it->fromPeerId, it->hash});
+                results.push_back({it->fromPeerId, it->hash, it->delay_vote});
                 it = hashMessages.erase(it);
             } else {
                 ++it;
@@ -87,7 +97,7 @@ public:
         }
         // Ensure deterministic ordering based on fromPeerId
         std::stable_sort(results.begin(), results.end(), [](const auto& a, const auto& b) {
-            return a.first < b.first;
+            return a.peerId < b.peerId;
         });
         return results;
     }
@@ -107,8 +117,9 @@ public:
     void disconnect() override;
     void sendInput(uint32_t peerId, uint32_t tick, const std::vector<uint8_t>& serializedInput) override;
     std::vector<std::pair<uint32_t, std::vector<uint8_t>>> pollInputs(uint32_t tick) override;
-    void sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash) override;
-    std::vector<std::pair<uint32_t, uint32_t>> pollStateHashes(uint32_t tick) override;
+    void sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash, uint32_t delay_vote = 0) override;
+    std::vector<StateHashResult> pollStateHashes(uint32_t tick) override;
+    uint32_t getRTT(uint32_t peerId) const override;
 
 private:
     LoopbackHub& hub;

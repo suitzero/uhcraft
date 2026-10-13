@@ -55,7 +55,7 @@ If all peers apply the same inputs on the same tick, the simulation proceeds ide
 - [x] UDP transport + reliability layer (inputs must never be lost — redundant send or ack/resend)
 - [x] Include redundant inputs of recent k ticks in packets (loss tolerance)
 - [x] Network simulator (inject artificial loss/latency/jitter — for testing)
-- [ ] Adaptive input delay (adjust d based on RTT)
+- [x] Adaptive input delay (adjust d based on RTT)
 - [ ] Late peer handling policy (stall vs timeout vs drop)
 - [ ] Connection/Startup handshake (consensus on seed, start tick, peer list)
 - [ ] **Verification**: Long duration with no desync under 5% loss + 100ms jitter
@@ -81,6 +81,7 @@ If all peers apply the same inputs on the same tick, the simulation proceeds ide
 ## Determinism Rules (Things you must absolutely never violate)
 
 - Prohibited in simulation code: `float`/`double` (if fixed-point is chosen), `std::unordered_*` traversals, pointer address-based sorting/hashing, `rand()`, system time, thread races, uninitialized memory
+- Consensus metrics (like network RTT measurements used for input delay scaling) MUST be derived from identical sets of data provided by all peers and applied identically on the exact same tick on all clients.
 - Simulation inputs are only: Previous state + Input commands for the current tick
 - Rendering/Audio/UI **read-only** access to the simulation state
 

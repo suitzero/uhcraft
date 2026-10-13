@@ -45,7 +45,7 @@ void NetworkSimulator::flush() {
     while (!delayedHashes.empty() && delayedHashes.top().deliverAt <= now) {
         auto item = delayedHashes.top();
         delayedHashes.pop();
-        delegate.sendStateHash(item.peerId, item.tick, item.hash);
+        delegate.sendStateHash(item.peerId, item.tick, item.hash, item.delay_vote);
     }
 }
 
@@ -73,7 +73,7 @@ std::vector<std::pair<uint32_t, std::vector<uint8_t>>> NetworkSimulator::pollInp
     return delegate.pollInputs(tick);
 }
 
-void NetworkSimulator::sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash) {
+void NetworkSimulator::sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash, uint32_t delay_vote) {
     flush();
 
     if (shouldDrop()) {
@@ -81,18 +81,26 @@ void NetworkSimulator::sendStateHash(uint32_t peerId, uint32_t tick, uint32_t ha
     }
 
     if (config.baseLatencyMs == 0 && config.jitterMs == 0) {
-        delegate.sendStateHash(peerId, tick, hash);
+        delegate.sendStateHash(peerId, tick, hash, delay_vote);
     } else {
         DelayedHash delayed;
         delayed.deliverAt = calculateDeliveryTime();
         delayed.peerId = peerId;
         delayed.tick = tick;
         delayed.hash = hash;
+        delayed.delay_vote = delay_vote;
         delayedHashes.push(delayed);
     }
 }
 
-std::vector<std::pair<uint32_t, uint32_t>> NetworkSimulator::pollStateHashes(uint32_t tick) {
+std::vector<StateHashResult> NetworkSimulator::pollStateHashes(uint32_t tick) {
     flush();
     return delegate.pollStateHashes(tick);
+}
+
+uint32_t NetworkSimulator::getRTT(uint32_t peerId) const {
+    // Add 2x the base latency to simulate round trip time over the artificial link.
+    // In a real scenario, latency jitter causes this to fluctuate, but for simplistic tests,
+    // we use baseLatencyMs * 2 as a solid baseline addition to whatever delegate returns.
+    return delegate.getRTT(peerId) + (config.baseLatencyMs * 2);
 }

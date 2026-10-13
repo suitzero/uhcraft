@@ -66,10 +66,10 @@ void test_normal_exchange() {
         auto hashes2 = peer2.pollStateHashes(tick);
         
         assert(hashes1.size() == 1);
-        assert(hashes1[0].first == 2 && hashes1[0].second == tick * 100);
+        assert(hashes1[0].peerId == 2 && hashes1[0].hash == tick * 100);
         
         assert(hashes2.size() == 1);
-        assert(hashes2[0].first == 1 && hashes2[0].second == tick * 100);
+        assert(hashes2[0].peerId == 1 && hashes2[0].hash == tick * 100);
     }
     
     peer1.disconnect();

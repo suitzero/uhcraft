@@ -27,16 +27,20 @@ std::vector<std::pair<uint32_t, std::vector<uint8_t>>> LoopbackPeer::pollInputs(
     return hub.dequeue(myPeerId, tick);
 }
 
-void LoopbackPeer::sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash) {
+void LoopbackPeer::sendStateHash(uint32_t peerId, uint32_t tick, uint32_t hash, uint32_t delay_vote) {
     if (!connected) {
         throw std::runtime_error("Cannot send hash while disconnected");
     }
-    hub.enqueueHash(myPeerId, peerId, tick, hash);
+    hub.enqueueHash(myPeerId, peerId, tick, hash, delay_vote);
 }
 
-std::vector<std::pair<uint32_t, uint32_t>> LoopbackPeer::pollStateHashes(uint32_t tick) {
+std::vector<StateHashResult> LoopbackPeer::pollStateHashes(uint32_t tick) {
     if (!connected) {
         throw std::runtime_error("Cannot poll hashes while disconnected");
     }
     return hub.dequeueHashes(myPeerId, tick);
+}
+
+uint32_t LoopbackPeer::getRTT(uint32_t /*peerId*/) const {
+    return 0; // Localhost loopback is instantaneous
 }

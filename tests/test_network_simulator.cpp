@@ -33,8 +33,8 @@ void test_zero_config() {
 
     auto hashes = ns2.pollStateHashes(100);
     assert(hashes.size() == 1);
-    assert(hashes[0].first == 1);
-    assert(hashes[0].second == 42);
+    assert(hashes[0].peerId == 1);
+    assert(hashes[0].hash == 42);
 
     ns1.disconnect();
     ns2.disconnect();
