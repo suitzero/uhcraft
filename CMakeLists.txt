@@ -18,6 +18,17 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address,undefined")
 endif()
 
+if(ANDROID)
+    add_library(uhcraft SHARED 
+        android/app/src/main/cpp/android_main.cpp
+        src/LoopbackPeer.cpp
+        src/NetworkSimulator.cpp
+        src/UdpPeer.cpp
+    )
+    target_include_directories(uhcraft PRIVATE include)
+    target_link_libraries(uhcraft log)
+endif()
+
 # We will add executable targets later as we build Phase 0.
 add_executable(sim_demo src/main.cpp)
 target_include_directories(sim_demo PRIVATE include)
