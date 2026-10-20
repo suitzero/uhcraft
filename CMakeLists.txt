@@ -30,6 +30,11 @@ if(ANDROID)
     )
     target_include_directories(uhcraft PRIVATE include)
     target_link_libraries(uhcraft log)
+    # 16 KB page-size devices (recent Pixel/Galaxy flagships on Android 15+)
+    # refuse to load 4 KB-aligned native libraries: dlopen fails and the app
+    # dies on launch. Align LOAD segments to 16 KB; 16 KB-aligned libraries
+    # still load fine on 4 KB devices.
+    target_link_options(uhcraft PRIVATE "-Wl,-z,max-page-size=16384")
 endif()
 
 # We will add executable targets later as we build Phase 0.
