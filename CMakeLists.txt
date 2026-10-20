@@ -12,8 +12,11 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
 endif()
 
-# Sanitizers (Address and Undefined Behavior) for Debug builds
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
+# Sanitizers (Address and Undefined Behavior) for Debug builds -- host builds only.
+# Android APKs do not package the ASan runtime (libclang_rt.asan-*-android.so),
+# so a sanitized libuhcraft.so fails System.loadLibrary with UnsatisfiedLinkError
+# and the app crashes instantly on launch.
+if(NOT ANDROID AND CMAKE_CXX_COMPILER_ID MATCHES "Clang|GNU")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fsanitize=address,undefined -fno-omit-frame-pointer")
     set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fsanitize=address,undefined")
 endif()
